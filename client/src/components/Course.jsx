@@ -12,6 +12,7 @@ const Course = ({ courses }) => {
           key={index}
           className="bg-white rounded-lg p-4 h-50 flex flex-col justify-between"
         >
+          <img src={course.course_cover_image} />
           <p className="text-lg font-bold text-blue-800">
             {capitalizeWords(course.title)}
           </p>

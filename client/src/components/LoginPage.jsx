@@ -1,16 +1,38 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 
 const LoginPage = () => {
   const [isVisible, setIsVisible] = useState(false);
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
+
   const handleShowPassword = (e) => {
     e.preventDefault();
     setIsVisible(!isVisible);
   };
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
+
+    try {
+      const response = await fetch("http://localhost:3001/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // Specify JSON data
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (response.ok) {
+        navigate("/landing");
+      }
+    } catch (err) {
+      console.log("Registration failed", err.message);
+    }
   };
   return (
     <div className="h-screen w-full flex bg-gray-200 overflow-hidden px-10 py-8 gap-4">
@@ -19,7 +41,10 @@ const LoginPage = () => {
         src="/assets/login.jpg"
       />
 
-      <form className="w-[45%] bg-white flex flex-col items-center  rounded-2xl">
+      <form
+        onSubmit={handleFormSubmit}
+        className="w-[45%] bg-white flex flex-col items-center  rounded-2xl"
+      >
         <p className=" text-blue-800 text-center text-4xl font-bold mt-6">
           Log In to Continue your Learning Journey
         </p>
@@ -29,12 +54,13 @@ const LoginPage = () => {
               htmlFor="username"
               className="block text-lg font-serif font-semibold text-gray-700 mb-6 text-center"
             >
-              Username
+              Email
             </label>
             <input
+              onChange={(e) => setEmail(e.target.value)}
               type="text"
-              name="username"
-              id="username"
+              name="email"
+              id="email"
               placeholder="Enter your username"
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
             />
@@ -50,6 +76,7 @@ const LoginPage = () => {
             </label>
             <div className="flex border border-gray-300 rounded-md shadow-sm pr-4">
               <input
+                onChange={(e) => setPassword(e.target.value)}
                 type={isVisible ? "text" : "password"}
                 name="password"
                 id="password"
@@ -65,7 +92,10 @@ const LoginPage = () => {
             </div>
 
             <div className="h-full flex justify-center items-center">
-              <button className="px-5 py-2 bg-blue-800 text-white rounded-2xl mt-6 hover:bg-blue-600 font-semibold">
+              <button
+                type="submit"
+                className="px-5 py-2 bg-blue-800 text-white rounded-2xl mt-6 hover:bg-blue-600 font-semibold"
+              >
                 Login
               </button>
             </div>
