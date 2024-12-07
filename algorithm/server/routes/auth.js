@@ -1,9 +1,13 @@
 import express from "express";
+import cors from "cors";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { User } from "../models/User.js";
 
 const router = express.Router();
+
+// Apply CORS to all routes in this router
+router.use(cors());
 
 router.post("/register", async (req, res) => {
   console.log(req.body);
@@ -60,3 +64,4 @@ router.post("/login", async (req, res) => {
 });
 
 export default router;
+

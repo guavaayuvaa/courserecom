@@ -1,4 +1,4 @@
-import React from "react";
+
 import Navbar from "../components/Navbar";
 
 const HomePage = () => {
@@ -15,9 +15,9 @@ const HomePage = () => {
             <p className="font-semibold text-xl my-10 mr-8 text-gray-600 text-justify">
               {" "}
               Our platform connects you with courses that fit your lifestyle and
-              goals. Whether you're looking to level up your career or explore
-              something new, we’re here to support your journey every step of
-              the way. Let’s discover your next big opportunity together!{" "}
+              goals. Whether you are looking to level up your career or explore
+              something new, we are here to support your journey every step of
+              the way. Lets discover your next big opportunity together!{" "}
             </p>
           </div>
           <div className="w-1/2 grid grid-cols-2 gap-4 mt-20">

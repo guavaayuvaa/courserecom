@@ -1,15 +1,21 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-
-
 import pandas as pd
 import neattext.functions as nfx
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
 
+# Configure CORS
+CORS(app, resources={r"/*": {
+    "origins": "http://localhost:5173",  # Your React app's URL
+    "methods": ["GET", "POST", "OPTIONS"],
+    "allow_headers": ["Content-Type", "Authorization"],
+    "supports_credentials": True
+}})
+
+# Remove the @app.after_request decorator and its function
 
 def readData():
     df = pd.read_csv("courses-cleaned.csv")
@@ -55,7 +61,6 @@ def searchterm(term, df):
 @app.route('/')
 def index():
     return "Welcome !"  
-
 
 @app.route('/courses', methods=['GET'])
 def get_top_courses():
