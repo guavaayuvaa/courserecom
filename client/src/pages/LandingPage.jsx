@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import Navbar from "../components/Navbar";
 import Course from "../components/Course";
@@ -14,22 +14,53 @@ const LandingPage = () => {
 
   const API = "http://127.0.0.1:5000";
 
+  const saveCourses = async (courses) => {
+    try {
+      const response = await fetch(`http://localhost:3000/courses/save`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ courses }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        console.log('Courses saved successfully');
+      } else {
+        console.error('Failed to save courses:', data.message);
+      }
+    } catch (error) {
+      console.error('Error saving courses:', error);
+    }
+  };
+
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     setSearchTerm(search);
   };
 
   useEffect(() => {
-    fetch(`${API}/courses`)
+    fetch(`${API}/courses`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
           setTopCourses(data.data);
+          // Save the top courses
+          saveCourses(data.data);
         } else {
           setError(data.message || "Failed to fetch top courses");
         }
       })
-      .catch(() => setError("Error fetching the top courses"));
+      .catch((err) => {
+        console.error("Error fetching the top courses:", err);
+        setError("Error fetching the top courses");
+      });
   }, []);
 
   const handleSearch = (e) => {
@@ -38,20 +69,28 @@ const LandingPage = () => {
 
     fetch(`${API}/search`, {
       method: "POST",
+      credentials: 'include',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ term: search }),
     })
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
+          console.log(JSON.stringify(data));
           setSearchResults(data.data);
           setError(""); // Clear error
+
+          // Save the courses after receiving the search results
+          saveCourses(data.data);
         } else {
           setSearchResults([]);
           setError(data.message || "No matching courses found.");
         }
       })
-      .catch(() => setError("Error searching for courses."));
+      .catch((err) => {
+        console.error("Error searching for courses:", err);
+        setError("Error searching for courses.");
+      });
   };
 
   return (
@@ -106,3 +145,4 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
+
