@@ -1,7 +1,7 @@
 import express from "express";
-import mongoose, { model } from "mongoose";
+import mongoose from "mongoose";
 
-const router = express.Router;
+const router = express.Router();
 
 const UserSchema = mongoose.Schema({
   email: {
@@ -19,4 +19,6 @@ const UserSchema = mongoose.Schema({
   },
 });
 
-export const User = mongoose.model("User", UserSchema);
+const User = mongoose.model("User", UserSchema);
+
+export default User;
