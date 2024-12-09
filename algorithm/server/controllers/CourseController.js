@@ -28,3 +28,36 @@ export const saveTopCourses = async (courses) => {
     }
   };
 
+export const saveUserCourse = async (course, userEmail) => {
+  try {
+    const courseData = {
+      ...course,
+      userId: userEmail
+    };
+    console.log(courseData)
+
+    const savedCourse = await Course.findOneAndUpdate(
+      { title: courseData.title, userId: userEmail },
+      courseData,
+      { upsert: true, new: true }
+    );
+
+    console.log(savedCourse)
+
+    return { success: true, message: 'Course saved successfully', course: savedCourse };
+  } catch (error) {
+    console.error('Error saving course:', error);
+    return { success: false, message: 'Failed to save course' };
+  }
+};
+
+export const getSavedCourses = async (userEmail) => {
+  try {
+    const savedCourses = await Course.find({ userId: userEmail });
+    return { success: true, courses: savedCourses };
+  } catch (error) {
+    console.error('Error fetching saved courses:', error);
+    return { success: false, message: 'Failed to fetch saved courses' };
+  }
+};
+

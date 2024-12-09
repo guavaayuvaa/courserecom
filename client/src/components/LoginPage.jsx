@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
@@ -22,16 +22,24 @@ const LoginPage = () => {
       const response = await fetch("http://localhost:3000/auth/login", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json", // Specify JSON data
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
 
       if (response.ok) {
-        navigate("/landing");
+        const data = await response.json();
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          navigate("/landing");
+        } else {
+          console.error("Login successful but no token received");
+        }
+      } else {
+        console.error("Login failed");
       }
     } catch (err) {
-      console.log("Registration failed", err.message);
+      console.error("Login failed", err.message);
     }
   };
   return (
@@ -118,3 +126,4 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+

@@ -1,15 +1,20 @@
 import express from 'express';
 import cors from 'cors';
-import { saveTopCourses} from '../controllers/CourseController.js';
+import { saveUserCourse, getSavedCourses } from '../controllers/CourseController.js';
+import authenticateToken from '../middleware/authenticateToken.js';
 
 const router = express.Router();
 
-router.use(cors());
 
-router.post('/save', async (req, res) => {
-    console.log("object")
-  const { courses } = req.body;
-  const result = await saveTopCourses(courses);
+
+router.post('/save', authenticateToken, async (req, res) => {
+  const { course } = req.body;
+  const result = await saveUserCourse(course, req.user.email);
+  res.json(result);
+});
+
+router.get('/saved', authenticateToken, async (req, res) => {
+  const result = await getSavedCourses(req.user.email);
   res.json(result);
 });
 
